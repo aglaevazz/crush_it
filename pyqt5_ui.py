@@ -32,8 +32,7 @@ class CrushUI(QMainWindow):
         QMessageBox.information(self, 'Information', 'Crush at least 3 Items!')
 
     def refresh_status_bar(self):
-        self.status_bar.showMessage('Score: {}                   Target: {}'.format(game.score * 10,
-                                                                                    game.target * 10))
+        self.status_bar.showMessage(f'Score: {game.score * 10}' + str(game.size * 10 * ' ') + f'Target: {game.target * 10}')
 
 
 class CrushWidget(QFrame):
@@ -71,7 +70,7 @@ class CrushWidget(QFrame):
         y = int(event.y())
         row = int(y // self.square_height)
         column = int(x // self.square_width)
-        game.play_game(row, column)
+        result = game.play_game(row, column)
         self.parent.refresh_status_bar()
         if game.winner:
             QMessageBox.information(self.parent, 'Winner!', 'Congratulations, You Won!')
@@ -88,7 +87,7 @@ class CrushWidget(QFrame):
                 self.parent.board_widget = CrushWidget(self.parent)
         else:
             self.update()
-            if game.reset_board:
+            if result == 'no more move':
                 QMessageBox.information(self.parent, 'no more move',
                                         'Sorry, no more move. \nHere comes your new board!')
                 game.set_up_board()

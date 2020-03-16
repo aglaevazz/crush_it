@@ -18,7 +18,6 @@ class Game:
     def set_values(self):
         self.delete = set()
         self.create_items = []
-        self.reset_board = False
 
     def play_game(self, row, column):
         if self.winner:
@@ -26,7 +25,7 @@ class Game:
         self.set_values()
         self.make_move(row, column)
         if self.no_next_move():
-            self.reset_board = True
+            return 'no more move'
 
     def set_up_board(self):
         for row in range(self.size):
