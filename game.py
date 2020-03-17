@@ -3,17 +3,27 @@ import string
 
 
 class Game:
-    def __init__(self, size=3, characters=string.ascii_letters, target=100):
+    def __init__(self, size=3, target=100, level='medium'):
         self.size = size
-        self.characters = characters[:self.size - 1]
         self.target = target
-        self.board = [[None for _ in range(size)] for _ in range(size)]
+        self.level = level
+        self.characters = string.ascii_letters
+        self.board = [[None] * self.size for _ in range(size)]
 
     def set_up_game(self):
+        self.set_mode()
         self.set_values()
         self.score = 0
         self.winner = False
         self.set_up_board()
+
+    def set_mode(self):
+        if self.level == 'easy':
+            self.characters = self.characters[:self.size - self.size // 2]
+        elif self.level == 'medium':
+            self.characters = self.characters[:self.size - self.size // 3]
+        elif self.level == 'hard':
+            self.characters = self.characters[:self.size]
 
     def set_values(self):
         self.delete = set()

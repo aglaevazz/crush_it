@@ -1,22 +1,17 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QFrame, QMessageBox
+
+from PyQt5.QtGui import QColor, QPainter
+from PyQt5.QtWidgets import QApplication, QFrame, QMainWindow, QMessageBox
+
+import colors
 from game import Game
-from PyQt5.QtGui import QPainter, QColor
 
 
 class CrushUI(QMainWindow):
     def __init__(self):
         super().__init__()
-        red = (255, 0, 0)
-        yellow = (250, 223, 0)
-        light_green = (0, 255, 127)
-        navy = (0,0,128)
-        blue = 	(0,0,255)
-        lavender = (221, 160, 221)
-        aqua = (0, 255, 255)
-        green = (0, 128, 0)
-        maroon = (139, 0, 0)
-        game.characters = [aqua, green, light_green, yellow, red, navy, lavender, maroon, blue]
+        game.characters = [colors.aqua, colors.green, colors.light_green, colors.yellow, colors.red, colors.navy,
+                           colors.lavender, colors.maroon, colors.blue]
         game.set_up_game()
         self.set_up_widget()
 
@@ -32,8 +27,8 @@ class CrushUI(QMainWindow):
         QMessageBox.information(self, 'Information', 'Crush at least 3 Items!')
 
     def refresh_status_bar(self):
-        self.status_bar.showMessage(f'Score: {game.score * 10}' + str(game.size * 10 * ' ') + f'Target: {game.target * 10}')
-
+        self.status_bar.showMessage(f'Score: {game.score * 10}' + str(self.width() // 5 * ' ') +
+                                    f'Target: {game.target * 10}')
 
 class CrushWidget(QFrame):
     def __init__(self, parent):
@@ -42,14 +37,13 @@ class CrushWidget(QFrame):
         self.set_size()
 
     def set_size(self):
-        self.height = self.parent.frameGeometry().height() - 49
-        self.width = self.parent.frameGeometry().width()
-        self.square_height = self.height / game.size
-        self.square_width = self.width / game.size
+        self.square_height = self.height() / game.size
+        self.square_width = self.width() / game.size
 
     def resizeEvent(self, QResizeEvent):
         self.set_size()
         self.update()
+        self.parent.refresh_status_bar()
 
     def paintEvent(self, event):
         painter = QPainter(self)
@@ -60,7 +54,7 @@ class CrushWidget(QFrame):
 
     def paint_square(self, painter, color, row, column):
         painter.setBrush(QColor(*color))
-        painter.setPen(QColor(255, 255, 255))
+        painter.setPen(QColor(*colors.white))
         x = self.square_width * column
         y = self.square_height * row
         painter.drawRect(x, y, self.square_width, self.square_height)
