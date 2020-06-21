@@ -28,7 +28,7 @@ class CrushUI(QMainWindow):
 
     def refresh_status_bar(self):
         self.status_bar.showMessage(f'Score: {game.score * 10}' + str(self.width() // 5 * ' ') +
-                                    f'Target: {game.target * 10}')
+                                    f'Target: {game.target_score_to_win * 10}')
 
 class CrushWidget(QFrame):
     def __init__(self, parent):
@@ -37,8 +37,8 @@ class CrushWidget(QFrame):
         self.set_size()
 
     def set_size(self):
-        self.square_height = self.height() / game.size
-        self.square_width = self.width() / game.size
+        self.square_height = self.height() / game.board_size
+        self.square_width = self.width() / game.board_size
 
     def resizeEvent(self, QResizeEvent):
         self.set_size()
@@ -47,8 +47,8 @@ class CrushWidget(QFrame):
 
     def paintEvent(self, event):
         painter = QPainter(self)
-        for row in range(game.size):
-            for column in range(game.size):
+        for row in range(game.board_size):
+            for column in range(game.board_size):
                 color = game.board[row][column]
                 self.paint_square(painter, color, row, column)
 

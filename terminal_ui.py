@@ -20,6 +20,7 @@ class TerminalUI:
             game.set_up_board()
             self.print_board('Sorry, no more move! \nThis is your new board: ')
 
+
     @staticmethod
     def print_board(text='This is the current board: '):
         print(text)
@@ -28,7 +29,7 @@ class TerminalUI:
 
     @staticmethod
     def print_score():
-        print(f'Your target is {game.target} points. You currently earned {game.score} points.')
+        print(f'Your target is {game.target_score_to_win} points. You currently earned {game.score} points.')
 
     def ask_for_move(self):
         print('Lets make a move... \nPlease enter your row below:')
@@ -40,18 +41,18 @@ class TerminalUI:
     def get_input(self):
         try:
             input_ = int(input())
-            if 0 < input_ <= game.size:
+            if 0 < input_ <= game.board_size:
                 return input_
             return self.wrong_input()
         except ValueError:
             return self.wrong_input()
 
     def wrong_input(self):
-        print(f'Please enter a number between 1 and {game.size}:')
+        print(f'Please enter a number between 1 and {game.board_size}:')
         return self.get_input()
 
 
 if __name__ == '__main__':
-    game = Game(3, target=10)
+    game = Game(3, 'easy')
     TerminalUI()
 

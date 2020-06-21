@@ -15,30 +15,31 @@ class TestGame(unittest.TestCase):
         self.game.create_items = []
         self.game.score = 0
         self.game.winner = False
-        self.game.size = 3
+        self.game.board_size = 3
+        self.game.target_score_to_win = 100
 
     def test_set_up_board(self):
-        self.game.board = [[None for _ in range(self.game.size)] for _ in range(self.game.size)]
+        self.game.board = [[None for _ in range(self.game.board_size)] for _ in range(self.game.board_size)]
         self.game.set_up_board()
-        for row in range(self.game.size):
-            for column in range(self.game.size):
+        for row in range(self.game.board_size):
+            for column in range(self.game.board_size):
                 self.assertTrue(self.game.board[row][column])
 
     def test_neighbor_items(self):
         '''[left, right, lower, upper]'''
-        self.assertEqual(Game.neighbor_items(self.game, 1, 0), [None, 'a', 'b', 'a'])
-        self.assertEqual(Game.neighbor_items(self.game, 2, 2), ['c', None, None, 'b'])
-        self.assertEqual(Game.neighbor_items(self.game, 0, 0), [None, 'b', 'b', None])
-        self.assertEqual(Game.neighbor_items(self.game, 1, 1), ['b', 'b', 'c', 'b'])
-        self.assertEqual(Game.neighbor_items(self.game, 1, 2), ['a', None, 'b', 'b'])
+        self.assertEqual(Game.get_neighbor_items(self.game, 1, 0), [None, 'a', 'b', 'a'])
+        self.assertEqual(Game.get_neighbor_items(self.game, 2, 2), ['c', None, None, 'b'])
+        self.assertEqual(Game.get_neighbor_items(self.game, 0, 0), [None, 'b', 'b', None])
+        self.assertEqual(Game.get_neighbor_items(self.game, 1, 1), ['b', 'b', 'c', 'b'])
+        self.assertEqual(Game.get_neighbor_items(self.game, 1, 2), ['a', None, 'b', 'b'])
 
     def test_neighbor_coordinates(self):
         '''[left, right, lower, upper]'''
-        self.assertEqual(Game.neighbor_coordinates(self.game, 1, 0), [None, (1, 1), (2, 0), (0, 0)])
-        self.assertEqual(Game.neighbor_coordinates(self.game, 2, 2), [(2, 1), None, None, (1, 2)])
-        self.assertEqual(Game.neighbor_coordinates(self.game, 0, 0), [None, (0, 1), (1, 0), None])
-        self.assertEqual(Game.neighbor_coordinates(self.game, 1, 1), [(1, 0), (1, 2), (2, 1), (0, 1)])
-        self.assertEqual(Game.neighbor_coordinates(self.game, 1, 2), [(1, 1), None, (2, 2), (0, 2)])
+        self.assertEqual(Game.get_neighbor_coordinates(self.game, 1, 0), [None, (1, 1), (2, 0), (0, 0)])
+        self.assertEqual(Game.get_neighbor_coordinates(self.game, 2, 2), [(2, 1), None, None, (1, 2)])
+        self.assertEqual(Game.get_neighbor_coordinates(self.game, 0, 0), [None, (0, 1), (1, 0), None])
+        self.assertEqual(Game.get_neighbor_coordinates(self.game, 1, 1), [(1, 0), (1, 2), (2, 1), (0, 1)])
+        self.assertEqual(Game.get_neighbor_coordinates(self.game, 1, 2), [(1, 1), None, (2, 2), (0, 2)])
 
     def test_row_above(self):
         for row, boolean in enumerate([False, True, True]):
@@ -81,7 +82,7 @@ class TestGame(unittest.TestCase):
             ['a', 'b', 'b'],
             ['b', 'a', 'b'],
             ['b', None, 'b']]
-        self.game.switch_items(*lower_item, *upper_item)
+        self.game.swap_items(*lower_item, *upper_item)
         new_board = [
             ['a', 'b', 'b'],
             ['b', None, 'b'],
@@ -95,7 +96,7 @@ class TestGame(unittest.TestCase):
             ['a', 'b', 'b'],
             ['b', 'a', 'b'],
             [None, 'c', 'b']]
-        self.game.switch_items(*lower_item, *upper_item)
+        self.game.swap_items(*lower_item, *upper_item)
         new_board = [
             [None, 'b', 'b'],
             ['b', 'a', 'b'],
@@ -109,7 +110,7 @@ class TestGame(unittest.TestCase):
             ['a', 'b', 'b'],
             ['b', 'a', None],
             ['b', 'c', 'b']]
-        self.game.switch_items(*lower_item, *upper_item)
+        self.game.swap_items(*lower_item, *upper_item)
         new_board = [
             ['a', 'b', None],
             ['b', 'a', 'b'],
