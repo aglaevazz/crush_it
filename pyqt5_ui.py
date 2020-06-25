@@ -13,6 +13,7 @@ class CrushUI(QMainWindow):
         game.characters = [colors.aqua, colors.green, colors.light_green, colors.yellow, colors.red, colors.navy,
                            colors.lavender, colors.maroon, colors.blue]
         game.set_up_game()
+        self.status_bar = self.statusBar()
         self.set_up_widget()
 
     def set_up_widget(self):
@@ -21,7 +22,6 @@ class CrushUI(QMainWindow):
         board_widget = CrushWidget(self)
         self.setCentralWidget(board_widget)
         self.setWindowTitle('Crush It!')
-        self.status_bar = self.statusBar()
         self.refresh_status_bar()
         self.show()
         QMessageBox.information(self, 'Information', 'Crush at least 3 Items!')
@@ -30,11 +30,16 @@ class CrushUI(QMainWindow):
         self.status_bar.showMessage(f'Score: {game.score * 10}' + str(self.width() // 5 * ' ') +
                                     f'Target: {game.target_score_to_win * 10}')
 
+
 class CrushWidget(QFrame):
     def __init__(self, parent):
         super().__init__()
         self.parent = parent
+        self.square_height = None
+        self.square_width = None
         self.set_size()
+        game.callback_won_game = self.user_won_game
+        game.callback_replace_board = self.no_more_move_available
 
     def set_size(self):
         self.square_height = self.height() / game.board_size
@@ -64,28 +69,28 @@ class CrushWidget(QFrame):
         y = int(event.y())
         row = int(y // self.square_height)
         column = int(x // self.square_width)
-        result = game.play_game(row, column)
+        game.make_move(row, column)
         self.parent.refresh_status_bar()
-        if game.winner:
-            QMessageBox.information(self.parent, 'Winner!', 'Congratulations, You Won!')
-            play_again_message_box = QMessageBox(self)
-            play_again_answer = play_again_message_box.question(self.parent,
-                                                                'Winner!', 'Do you want to Crush-It again?',
-                                                                play_again_message_box.Yes | play_again_message_box.No,
-                                                                play_again_message_box.Yes)
-            if play_again_answer == QMessageBox.No:
-                sys.exit()
-            else:
-                game.set_up_game()
-                self.parent.refresh_status_bar()
-                self.parent.board_widget = CrushWidget(self.parent)
+        self.update()
+
+    def user_won_game(self):
+        QMessageBox.information(self.parent, 'Winner!', 'Congratulations, You Won!')
+        play_again_message_box = QMessageBox(self)
+        play_again_answer = play_again_message_box.question(self.parent,
+                                                            'Winner!', 'Do you want to Crush-It again?',
+                                                            play_again_message_box.Yes | play_again_message_box.No,
+                                                            play_again_message_box.Yes)
+        if play_again_answer == QMessageBox.No:
+            sys.exit()
         else:
-            self.update()
-            if result == 'no more move':
-                QMessageBox.information(self.parent, 'no more move',
-                                        'Sorry, no more move. \nHere comes your new board!')
-                game.set_up_board()
-                self.update()
+            game.set_up_game()
+            self.parent.refresh_status_bar()
+            self.parent.board_widget = CrushWidget(self.parent)
+
+    def no_more_move_available(self):
+        QMessageBox.information(self.parent, 'no more move',
+                                'Sorry, no more move. \nHere comes your new board!')
+        game.set_up_board()
 
 
 if __name__ == '__main__':
