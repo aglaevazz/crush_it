@@ -3,7 +3,7 @@ from game import Game
 
 class TerminalUI:
     def __init__(self):
-        self.game = Game(3, 'easy')
+        self.game = Game(board_size=3, difficulty_level=1)
         self.game.callback_won_game = self.user_won_game
         self.game.callback_replace_board = self.no_move_move_available
         self.play()

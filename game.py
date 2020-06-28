@@ -1,9 +1,10 @@
 import random
 import string
+from level_enum import Level
 
 
 class Game:
-    def __init__(self, board_size=3, difficulty_level='medium'):
+    def __init__(self, board_size=3, difficulty_level=2):
         self.board_size = board_size
         self.difficulty_level = difficulty_level
         self.target_score_to_win = None
@@ -21,13 +22,13 @@ class Game:
         self.set_up_board()
 
     def set_difficulty_level(self):
-        if self.difficulty_level == 'easy':
+        if self.difficulty_level is Level.easy.value:
             self.characters = self.characters[:self.board_size - self.board_size // 2]
             self.target_score_to_win = 20
-        elif self.difficulty_level == 'medium':
+        elif self.difficulty_level is Level.medium.value:
             self.characters = self.characters[:self.board_size - self.board_size // 3]
             self.target_score_to_win = 50
-        elif self.difficulty_level == 'hard':
+        elif self.difficulty_level is Level.hard.value:
             self.characters = self.characters[:self.board_size]
             self.target_score_to_win = 100
 
