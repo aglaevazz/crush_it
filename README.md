@@ -8,5 +8,3 @@ The group of tokens diappear, the upper tokens drift down and new tokens replace
 Technologies used:
 * Python3
 * PyQt5
-
-### The code is currently in code review.
